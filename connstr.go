@@ -5,14 +5,13 @@ import (
 	"unicode"
 )
 
-type Values map[string]string
-
 var (
 	ErrUnterminatedQuote              = errors.New(`unterminated quoted string literal in connection string`)
 	ErrMissingCharacterAfterBackslash = errors.New(`missing character after backslash`)
 	ErrMissingEqualSign               = errors.New(`missing = sign after parametr name`)
 )
 
+// quote qutes string if it has spaces
 func quote(s string) string {
 	for _, v := range []rune(s) {
 		if unicode.IsSpace(v) {
@@ -23,7 +22,7 @@ func quote(s string) string {
 }
 
 // ToConnectionString returns values formated as connection string.
-func (v Values) ToConnectionString() string {
+func ToConnectionString(v map[string]string) string {
 	s := ""
 	for key, value := range v {
 		if key == "" || value == "" {
@@ -66,12 +65,12 @@ func (s *scanner) SkipSpaces() (rune, bool) {
 	return r, ok
 }
 
-// parseOpts parses the options from name and adds them to the values.
+// Parse parses the options from name and adds them to the values.
 //
 // The parsing code is based on conninfo_parse from libpq's fe-connect.c
-func ParseOpts(name string) (Values, error) {
+func Parse(name string) (map[string]string, error) {
 	s := newScanner(name)
-	values := make(Values)
+	values := make(map[string]string)
 	for {
 		var (
 			keyRunes, valRunes []rune
