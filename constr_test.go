@@ -50,7 +50,7 @@ func TestConnectionStringSucces(t *testing.T) {
 	}
 
 	for _, v := range tests {
-		values, err := ParseOpts(v.connstr)
+		values, err := Parse(v.connstr)
 		if err != v.err {
 			t.Errorf(`Errors are not equal in "%s"`, v.connstr)
 			continue
